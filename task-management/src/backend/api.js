@@ -30,6 +30,6 @@ export const addTask = async (data) => {
     if(!title) {      
         return {type: ERROR, data: {message: 'mandatory fields are missing!'}}
     }
-    await tasks.add(data)
+    await tasks.add({...data, status: false})
     return {type: SUCCESS, data: {message: 'Task Added successfully!'}}
 }
