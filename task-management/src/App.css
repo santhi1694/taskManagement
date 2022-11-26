@@ -1,8 +1,24 @@
 .login-container {
-    background-image: url(../src/assets/login.jpg);
-    background-repeat: no-repeat;
-    background-position: left;
+  background-image: url(../src/assets/login.jpg);
+  background-repeat: no-repeat;
+  background-position: left;
 }
-html, body, .root, .App .login-container {
-    height: 100%;
-  }
+html,
+body,
+.root,
+.App .login-container {
+  height: 100%;
+}
+.site-layout {
+  height: 100%;
+}
+.site-layout-background {
+  background: #fff;
+  margin: 1.5rem;
+}
+.add-task-container {
+  min-height: 60%;
+}
+.task-list-container {
+  min-height: 25%;
+}
