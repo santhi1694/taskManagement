@@ -1,9 +1,23 @@
-import { Button, DatePicker, Form, Input } from "antd";
+import { Button, DatePicker, Form, Input, message } from "antd";
 import React from "react";
+import { addTask } from "../backend/api";
+import useAuth from "../hooks/useAuth";
+//Todo: styling and need to diable date before current date
 const AddTask = () => {
   const [form] = Form.useForm();
+  const { user } = useAuth();
   const onFinish = (values) => {
-    console.log("Success:", values);
+    const { title, dueDate} = values
+    console.log("Success:", values)
+    const data = { title, dueDate: dueDate?.valueOf(), userId:user.id };
+    addTask(data)
+      .then((res) => {
+        message[res.type](res.data.message);
+        form.resetFields()
+      })
+      .catch(() => {
+        message.error("Oops! something went wrong");
+      });
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -31,7 +45,7 @@ const AddTask = () => {
           <Input.TextArea rows={1} />
         </Form.Item>
         <Form.Item label="Due Date" name="dueDate">
-          <DatePicker />
+          <DatePicker  />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">

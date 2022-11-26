@@ -1,6 +1,6 @@
 import { ERROR, SUCCESS } from "../constants/constants";
 import { db } from "./db";
-const { users } = db;
+const { users,tasks } = db;
 
 export const getUser = (username) => users.get({ username });
 export const addUser = (data) => users.add(data);
@@ -24,3 +24,12 @@ export const loginUser = async (data) => {
   console.log("id", id)
   return { type: SUCCESS, data:{message: "User created successfully", data: {...data,id} }};
 };
+
+export const addTask = async (data) => {
+    const { title} = data;
+    if(!title) {      
+        return {type: ERROR, data: {message: 'mandatory fields are missing!'}}
+    }
+    await tasks.add(data)
+    return {type: SUCCESS, data: {message: 'Task Added successfully!'}}
+}
