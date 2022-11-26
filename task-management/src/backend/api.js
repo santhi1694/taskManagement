@@ -39,4 +39,8 @@ export const addTask = async (data) => {
   await tasks.add({ ...data, status: false, createdAt: new Date().valueOf() });
   return { type: SUCCESS, data: { message: "Task Added successfully!" } };
 };
-export const getTasks = (userId) => tasks.where('userId').equals(userId).reverse().toArray();
+export const getTasks = (userId) =>
+  tasks.where("userId").equals(userId).reverse().toArray();
+export const updateTaskStatus = async (id, status) => {
+  await tasks.update(id, { status });
+};
