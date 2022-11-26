@@ -1,8 +1,19 @@
 import React from 'react';
-import { Button,  Form, Input } from 'antd';
+import { Button,  Form, Input, message } from 'antd';
+import useAuth from '../hooks/useAuth';
+import { ERROR } from '../constants/constants';
 
 const Login = () => {
+  const { login, } = useAuth();
+  const [form] = Form.useForm();
   const onFinish = (values) => {
+    login(values).then(response => {
+      if(response.type === ERROR) {
+        form.resetFields(['password'])
+      }
+    }).catch(() => {
+      message.error('Something went wrong!')
+    })
     console.log('Success:', values);
   };
   const onFinishFailed = (errorInfo) => {
@@ -12,6 +23,7 @@ const Login = () => {
     <div className='login-container'>
     <Form
       name="basic"
+      form={form}
       labelCol={{
         span: 8,
       }}
