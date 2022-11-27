@@ -15,7 +15,6 @@ body,
 .site-layout-background {
   background: #fff;
   margin: 1.5rem;
- 
 }
 /* add task container css*/
 .add-task-container {
@@ -30,6 +29,16 @@ body,
 }
 /* reports  container css*/
 .reports-container {
-    min-height: 80%;
-    padding: 1rem;
+  min-height: 80%;
+  padding: 1rem;
+}
+/* header CSS */
+.menu-icon {
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+.app-header {
+  color: wheat;
+  line-height: normal !important;
 }
