@@ -49,7 +49,7 @@ const AddTask = () => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Submit
+            Add Task
           </Button>
         </Form.Item>
       </Form>
