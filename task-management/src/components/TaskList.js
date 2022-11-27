@@ -11,7 +11,7 @@ const columns = [
     title: "Serial Number",
     dataIndex: "title",
     key: "serialNum",
-    render: (_val, _row, index) => index + 1,
+    render: (_val, _row, index) => <div>{`(${index + 1})`}</div>,
   },
   {
     title: "Title",
@@ -33,7 +33,9 @@ const columns = [
     render: (value, record) => {
       return (
         <Checkbox
-          onChange={(event) => updateTaskStatus(record.id, event.target.checked)}
+          onChange={(event) =>
+            updateTaskStatus(record.id, event.target.checked)
+          }
           checked={value}
         />
       );
@@ -45,8 +47,8 @@ const TaskList = () => {
   const allTasks = useLiveQuery(() => getTasks(user.id));
   console.log("alltasks", allTasks);
   return (
-    <div className="site-layout-background task-list-container">
-      <Table dataSource={allTasks} columns={columns} rowKey="id"/>
+    <div className="site-layout-background task-list-container card">
+      <Table dataSource={allTasks} columns={columns} rowKey="id" />
     </div>
   );
 };
