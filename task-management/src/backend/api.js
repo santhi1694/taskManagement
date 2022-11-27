@@ -49,7 +49,11 @@ export const updateTaskStatus = async (id, status) => {
 
 export const getTasksWithFilters = async (userId, filters) => {
   try {
-    const result = await tasks.where("userId").equals(userId).reverse().toArray();
+    const result = await tasks
+      .where("userId")
+      .equals(userId)
+      .reverse()
+      .toArray();
     return {
       type: SUCCESS,
       data: {
@@ -58,7 +62,7 @@ export const getTasksWithFilters = async (userId, filters) => {
       },
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       type: ERROR,
       data: {

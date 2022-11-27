@@ -5,3 +5,5 @@ export const places = {
     LOGIN: '/login',
     REPORTS: '/reports'
 }
+export const SORT_DIRECTIONS = ["descend", "ascend","descend"];
+export const ACTIVE_COLOR = '#1890ff'

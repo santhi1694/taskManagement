@@ -1,17 +1,15 @@
-import { Input, Layout, message, Table, Tag, DatePicker, Switch } from "antd";
+import { CalendarOutlined, SearchOutlined } from "@ant-design/icons";
+import { Input, Layout, message, Table, Tag, DatePicker } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getTasksWithFilters } from "../backend/api";
-import { SUCCESS } from "../constants/constants";
+import { ACTIVE_COLOR, SORT_DIRECTIONS, SUCCESS } from "../constants/constants";
 import useAuth from "../hooks/useAuth";
 import { covertTime } from "../utils/utils";
+// TODO: date filtering issue
 
 const getTitleSearchProps = (dataIndex) => ({
-  filterDropdown: ({
-    setSelectedKeys,
-    selectedKeys,
-    confirm,
-  }) => (
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
     <div
       style={{
         padding: 8,
@@ -32,9 +30,11 @@ const getTitleSearchProps = (dataIndex) => ({
       />
     </div>
   ),
-  filterIcon: (filtered) => <div>search Icon</div>,
+  filterIcon: (filtered) => (
+    <SearchOutlined style={{ color: filtered ? ACTIVE_COLOR : undefined }} />
+  ),
   onFilter: (value, record) =>
-    record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    record[dataIndex].toString().toLowerCase().startsWith(value.toLowerCase()),
 });
 
 const getDateSearchprops = (dataIndex) => ({
@@ -56,7 +56,9 @@ const getDateSearchprops = (dataIndex) => ({
       />
     </div>
   ),
-  filterIcon: (filtered) => <div>date Icon</div>,
+  filterIcon: (filtered) => (
+    <CalendarOutlined style={{ color: filtered ? ACTIVE_COLOR : undefined }} />
+  ),
   onFilter: (value, record) => {
     const startDate = value[0]?.valueOf();
     const endDate = value[1]?.valueOf();
@@ -66,18 +68,18 @@ const getDateSearchprops = (dataIndex) => ({
 });
 
 const getStatusSearchProps = (dataIndex) => ({
-    filters: [
-        {
-          text: 'Completed',
-          value: true,
-        },
-        {
-          text: 'Pending',
-          value: false,
-        },
-      ],
-      onFilter: (value, record) => record[dataIndex] === value,
-      filterMultiple: false
+  filters: [
+    {
+      text: "Completed",
+      value: true,
+    },
+    {
+      text: "Pending",
+      value: false,
+    },
+  ],
+  onFilter: (value, record) => record[dataIndex] === value,
+  filterMultiple: false,
 });
 
 const columns = [
@@ -85,8 +87,8 @@ const columns = [
     title: "Titile",
     dataIndex: "title",
     key: "title",
-    sorter: (a, b) => a.title.length - b.title.length,
-    sortDirections: ["descend", "ascend"],
+    sorter: (a, b) => a.title.localeCompare(b.title),
+    sortDirections: SORT_DIRECTIONS,
     ...getTitleSearchProps("title"),
   },
   {
@@ -96,16 +98,16 @@ const columns = [
     render: (value) => {
       return <div>{covertTime(value)}</div>;
     },
-    sorter: true,
-    sortDirections: ["descend", "ascend"],
+    sorter: (a, b) => a.dueDate - b.dueDate,
+    sortDirections: SORT_DIRECTIONS,
     ...getDateSearchprops("dueDate"),
   },
   {
     title: "Status",
     dataIndex: "status",
     key: "status",
-    sorter: (a,b) =>  Number(a.status) - Number(b.status),
-    sortDirections: ["descend", "ascend", "descend"],
+    sorter: (a, b) => Number(a.status) - Number(b.status),
+    sortDirections: SORT_DIRECTIONS,
     render: (value) => {
       const color = value ? "green" : "red";
       return (
@@ -114,32 +116,32 @@ const columns = [
         </div>
       );
     },
-    ...getStatusSearchProps('status')
+    ...getStatusSearchProps("status"),
   },
 ];
 
 const Reports = () => {
   const [reports, setReports] = useState([]);
-  const [filters, setFilters] = useState({});
   const { user } = useAuth();
 
-  const getReports = useCallback(async () => {
-    const resp = await getTasksWithFilters(user.id, filters);
-    console.log("res", resp);
-    message[resp.type](resp.data.message);
-    if (resp.type === SUCCESS) {
-      setReports(resp.data.data);
-    }
-  }, [filters, user.id]);
-
   useEffect(() => {
+    const getReports = async () => {
+      if (user.id) {
+        const resp = await getTasksWithFilters(user.id);
+        console.log("res", resp);
+        message[resp.type](resp.data.message);
+        if (resp.type === SUCCESS) {
+          setReports(resp.data.data);
+        }
+      }
+    };
     getReports();
-  }, [filters, getReports]);
+  }, []);
 
   return (
     <Layout className="site-layout">
       <Content className="site-layout-background reports-container">
-        <Table dataSource={reports} columns={columns} />
+        <Table dataSource={reports} columns={columns} rowKey="id" />
       </Content>
     </Layout>
   );
