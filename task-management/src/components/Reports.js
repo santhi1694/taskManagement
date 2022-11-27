@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import { getTasksWithFilters } from "../backend/api";
 import { ACTIVE_COLOR, SORT_DIRECTIONS, SUCCESS } from "../constants/constants";
 import useAuth from "../hooks/useAuth";
-import { covertTime } from "../utils/utils";
-// TODO: date filtering issue
+import { covertTime, getStartStamp, isSameDate } from "../utils/utils";
 
+// customized fitler for Title with input box
 const getTitleSearchProps = (dataIndex) => ({
   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
     <div
@@ -33,23 +33,21 @@ const getTitleSearchProps = (dataIndex) => ({
   filterIcon: (filtered) => (
     <SearchOutlined style={{ color: filtered ? ACTIVE_COLOR : undefined }} />
   ),
+  // filter data with text startWith of title of task
   onFilter: (value, record) =>
     record[dataIndex].toString().toLowerCase().startsWith(value.toLowerCase()),
 });
 
+//customized filter for due date with date and range picker
 const getDateSearchprops = (dataIndex) => ({
   filterDropdown: ({
     setSelectedKeys,
-    selectedKeys,
     confirm,
-    clearFilters,
-    close,
   }) => (
     <div>
       <DatePicker.RangePicker
         allowEmpty={[false, true]}
         onChange={(dates) => {
-          console.log(dates, "Dates");
           setSelectedKeys(dates ? [dates] : []);
           confirm();
         }}
@@ -59,14 +57,23 @@ const getDateSearchprops = (dataIndex) => ({
   filterIcon: (filtered) => (
     <CalendarOutlined style={{ color: filtered ? ACTIVE_COLOR : undefined }} />
   ),
+  // if start date given return data with same date, if not return data with given range
   onFilter: (value, record) => {
+    if (!record.dueDate) {
+      return null;
+    }
+    const dueDate = record.dueDate.valueOf();
     const startDate = value[0]?.valueOf();
     const endDate = value[1]?.valueOf();
-    if (!endDate) return value === startDate;
-    return value <= endDate && value >= startDate;
+    const startStamp = getStartStamp(startDate);
+    if (!endDate) {
+      return isSameDate(startStamp, dueDate);
+    }
+    const endRange = getStartStamp(endDate);
+    return dueDate <= endRange && dueDate >= startStamp;
   },
 });
-
+// customized filter options for status
 const getStatusSearchProps = (dataIndex) => ({
   filters: [
     {
@@ -78,10 +85,12 @@ const getStatusSearchProps = (dataIndex) => ({
       value: false,
     },
   ],
+  // filter data which is equal to selected status
   onFilter: (value, record) => record[dataIndex] === value,
   filterMultiple: false,
 });
 
+// configuration of columns for report
 const columns = [
   {
     title: "Titile",
@@ -98,7 +107,9 @@ const columns = [
     render: (value) => {
       return <div>{covertTime(value)}</div>;
     },
-    sorter: (a, b) => a.dueDate - b.dueDate,
+    sorter: (a, b, order) => {
+      return a.dueDate - b.dueDate;
+    },
     sortDirections: SORT_DIRECTIONS,
     ...getDateSearchprops("dueDate"),
   },
@@ -128,7 +139,6 @@ const Reports = () => {
     const getReports = async () => {
       if (user.id) {
         const resp = await getTasksWithFilters(user.id);
-        console.log("res", resp);
         message[resp.type](resp.data.message);
         if (resp.type === SUCCESS) {
           setReports(resp.data.data);
@@ -140,7 +150,7 @@ const Reports = () => {
 
   return (
     <Layout className="site-layout">
-      <Content className="site-layout-background reports-container">
+      <Content className="site-layout-background reports-container card">
         <Table dataSource={reports} columns={columns} rowKey="id" />
       </Content>
     </Layout>

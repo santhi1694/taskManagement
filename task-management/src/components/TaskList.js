@@ -5,7 +5,7 @@ import { getTasks, updateTaskStatus } from "../backend/api";
 import useAuth from "../hooks/useAuth";
 import { covertTime } from "../utils/utils";
 
-//Todo : date conversion
+// columns configuration for taks list
 const columns = [
   {
     title: "Serial Number",
@@ -34,7 +34,7 @@ const columns = [
       return (
         <Checkbox
           onChange={(event) =>
-            updateTaskStatus(record.id, event.target.checked)
+            updateTaskStatus(record.id, event.target.checked) // update task status with id 
           }
           checked={value}
         />
@@ -45,7 +45,6 @@ const columns = [
 const TaskList = () => {
   const { user } = useAuth();
   const allTasks = useLiveQuery(() => getTasks(user.id));
-  console.log("alltasks", allTasks);
   return (
     <div className="site-layout-background task-list-container card">
       <Table dataSource={allTasks} columns={columns} rowKey="id" />

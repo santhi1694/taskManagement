@@ -13,6 +13,7 @@ import { places } from "./constants/constants";
 import useAuth from "./hooks/useAuth";
 const { REPORTS, LOGIN, HOME } = places;
 
+// protected layer for routes, based on loggedin session
 const RequireAuth = ({ children }) => {
   const { isLoggedIn } = useAuth();
   const location = useLocation();

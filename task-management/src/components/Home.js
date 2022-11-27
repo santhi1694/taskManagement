@@ -4,6 +4,7 @@ import React from "react";
 import AddTask from "./AddTask";
 import AppHeader from "./AppHeader";
 import TaskList from "./TaskList";
+// layout added for home page with header and contents
 const Home = () => {
   return (
     <Layout className="site-layout">

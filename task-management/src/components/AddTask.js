@@ -2,7 +2,7 @@ import { Button, DatePicker, Form, Input, message } from "antd";
 import React from "react";
 import { addTask } from "../backend/api";
 import useAuth from "../hooks/useAuth";
-//Todo: styling and need to diable date before current date
+
 const AddTask = () => {
   const [form] = Form.useForm();
   const { user } = useAuth();
