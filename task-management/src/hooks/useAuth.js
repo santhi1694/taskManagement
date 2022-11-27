@@ -14,10 +14,12 @@ const useAuth = () => {
   const login = async (data) => {
     const response = await loginUser(data);
     const userdata = response.data.data;
-    message[response.type](response.data.message, 5);
+    message[response.type](response.data.message, 0.5);
     if (userdata) {
       setUser(userdata);
-      navigate(state?.path || HOME);
+      setTimeout(() => {
+        navigate(state?.path || HOME);
+      }, 500);
     }
     return response;
   };
