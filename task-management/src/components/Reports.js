@@ -107,9 +107,7 @@ const columns = [
     render: (value) => {
       return <div>{covertTime(value)}</div>;
     },
-    sorter: (a, b, order) => {
-      return a.dueDate - b.dueDate;
-    },
+    sorter: (a, b) => (a.dueDate || 0) - (b.dueDate || 0),
     sortDirections: SORT_DIRECTIONS,
     ...getDateSearchprops("dueDate"),
   },

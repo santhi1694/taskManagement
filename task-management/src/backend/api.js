@@ -24,7 +24,6 @@ export const loginUser = async (data) => {
   }
 
   const id = await users.add({ ...data, createdAt: new Date().valueOf() });
-  console.log("id", id);
   return {
     type: SUCCESS,
     data: { message: "User created successfully", data: { ...data, id } },
