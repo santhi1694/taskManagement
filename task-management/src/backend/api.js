@@ -39,8 +39,31 @@ export const addTask = async (data) => {
   await tasks.add({ ...data, status: false, createdAt: new Date().valueOf() });
   return { type: SUCCESS, data: { message: "Task Added successfully!" } };
 };
+
 export const getTasks = (userId) =>
   tasks.where("userId").equals(userId).reverse().toArray();
+
 export const updateTaskStatus = async (id, status) => {
   await tasks.update(id, { status });
+};
+
+export const getTasksWithFilters = async (userId, filters) => {
+  try {
+    const result = await tasks.where("userId").equals(userId).reverse().toArray();
+    return {
+      type: SUCCESS,
+      data: {
+        message: "Reports fetched successfully !",
+        data: result,
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      type: ERROR,
+      data: {
+        message: "Oops! something went wrong",
+      },
+    };
+  }
 };
