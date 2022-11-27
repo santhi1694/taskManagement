@@ -28,12 +28,13 @@ const columns = [
   },
   {
     title: "Status",
-    dataIndex: "id",
-    key: "id",
-    render: (value) => {
+    dataIndex: "status",
+    key: "status",
+    render: (value, record) => {
       return (
         <Checkbox
-          onChange={(event) => updateTaskStatus(value, event.target.checked)}
+          onChange={(event) => updateTaskStatus(record.id, event.target.checked)}
+          checked={value}
         />
       );
     },
