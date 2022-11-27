@@ -46,7 +46,7 @@ const TaskList = () => {
   console.log("alltasks", allTasks);
   return (
     <div className="site-layout-background task-list-container">
-      <Table dataSource={allTasks} columns={columns} />
+      <Table dataSource={allTasks} columns={columns} rowKey="id"/>
     </div>
   );
 };
